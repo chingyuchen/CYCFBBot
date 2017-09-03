@@ -4,6 +4,17 @@ CYCFBbot is a facebook bot project in python3. CYCFBbot provides the framework o
 a facebook bot which examines and executes the commands. Facebook bot developers 
 can add on commands programs to their designed bot under the framework.
 
+## Example
+Here we have "/start", "/default" and "/help" commands in the CYCFBbot framwork. The
+following examples are based on these three commands. Facebook bot develpers can 
+add more command programs to their own CYCFBbot (see Add commands in Usage)
+
+### "/start" command
+When users starting the chat with CYCFBbot or send a text message "/start", CYCBot will
+execute the "/start" command program which sends a greeting message to the user.         
+![alt text](https://github.com/ "Logo Title Text 1")
+
+
 ## Installation
 `pip3 install git+https://github.com/chingyuchen/CYCFBBot`
 
