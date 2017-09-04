@@ -15,11 +15,10 @@ add more command programs to their own CYCFBbot (see Add commands in Usage)
 ### "/start" command
 When users start chating with CYCFBbot or send a text message "/start", CYCFBBot will
 execute the "/start" command program which sends a greeting message to the user.         
-eg1.        
-<a href="url"><img src="https://github.com/chingyuchen/CYCFBBot/blob/master/photo_2017-09-02_14-03-17.jpg" height="457" width="320"></a>
+        
+<a href="url"><img src="https://github.com/chingyuchen/CYCFBBot/blob/master/photo_2017-09-02_14-03-17.jpg" height="304" width="213"></a>
 
-eg2.         
-<a href="url"><img src="https://github.com/chingyuchen/CYCFBBot/blob/master/photo_2017-09-02_14-03-35.jpg" height="313" width="320"></a>
+<a href="url"><img src="https://github.com/chingyuchen/CYCFBBot/blob/master/photo_2017-09-02_14-03-35.jpg" height="208" width="213"></a>
           
 Following the greeting, the CYCFBBot will operates the default program. Here the default 
 program asks the user to choose a option as above figures.
@@ -31,9 +30,21 @@ description for the "/start" command operation above, after CYCFBbot finishes th
 start program execution (greeting to the user), CYCFBbot runs the default program. 
 Here the default program asks users to choose a option. CYCFBbot also runs default 
 program when recieves "/default" command.                
-<a href="url"><img src="https://github.com/chingyuchen/CYCFBBot/blob/master/photo_2017-09-03_20-06-49.jpg" height="313" width="320"></a>
+<a href="url"><img src="https://github.com/chingyuchen/CYCFBBot/blob/master/photo_2017-09-03_20-06-49.jpg" height="143" width="213"></a>
+                    
+### "/help" command 
+The help commands in CYCFBbot provides the command instructions. By sending "/help"
+to CYCFBbot, CYCFBbot will execute the help program which sends an instruction
+message to the user.
 
- 
+<a href="url"><img src="https://github.com/chingyuchen/CYCFBBot/blob/master/photo_2017-09-02_14-04-01.jpg" height="208" width="213"></a>
+
+Again, after the help program execution ends, the CYCFBbot will automatically run
+the default program (ask user to choose an option).
+
+### Invalid commands
+If a command is invalid, CYCFBbot will send a error message to the user.               
+<a href="url"><img src="https://github.com/chingyuchen/CYCFBBot/blob/master/photo_2017-09-02_14-04-08.jpg" height="123" width="213"></a>
 
 
               
