@@ -16,9 +16,10 @@ add more command programs to their own CYCFBbot (see Add commands in Usage)
 When users start chating with CYCFBbot or send a text message "/start", CYCFBBot will
 execute the "/start" command program which sends a greeting message to the user.         
 eg1.        
-![alt text](https://github.com/chingyuchen/CYCFBBot/blob/master/photo_2017-09-02_14-03-17.jpg =320x457)
+<a href="url"><img src="https://github.com/chingyuchen/CYCFBBot/blob/master/photo_2017-09-02_14-03-17.jpg" height="457" width="320"></a>
+
 eg2.         
-![alt text](https://github.com/chingyuchen/CYCFBBot/blob/master/photo_2017-09-02_14-03-35.jpg =320x313)
+<a href="url"><img src="https://github.com/chingyuchen/CYCFBBot/blob/master/photo_2017-09-02_14-03-35.jpg" height="313" width="320"></a>
           
 Following the greeting, the CYCFBBot will operates the default program. Here the default 
 program asks the user to choose a option as above figures.
@@ -30,7 +31,7 @@ description for the "/start" command operation above, after CYCFBbot finishes th
 start program execution (greeting to the user), CYCFBbot runs the default program. 
 Here the default program asks users to choose a option. CYCFBbot also runs default 
 program when recieves "/default" command.                
-![alt text]()
+<a href="url"><img src="https://github.com/chingyuchen/CYCFBBot/blob/master/photo_2017-09-03_20-06-49.jpg" height="313" width="320"></a>
 
  
 
