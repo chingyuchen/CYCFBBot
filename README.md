@@ -13,15 +13,28 @@ following examples are based on these three commands. Facebook bot develpers can
 add more command programs to their own CYCFBbot (see Add commands in Usage)
 
 ### "/start" command
-When users starting the chat with CYCFBbot or send a text message "/start", CYCBot will
+When users start chating with CYCFBbot or send a text message "/start", CYCFBBot will
 execute the "/start" command program which sends a greeting message to the user.         
 eg1.        
-![alt text](https://github.com/chingyuchen/CYCFBBot/blob/master/photo_2017-09-02_14-03-17.jpg)
+![alt text](https://github.com/chingyuchen/CYCFBBot/blob/master/photo_2017-09-02_14-03-17.jpg =320x457)
 eg2.         
-![alt text](https://github.com/chingyuchen/CYCFBBot/blob/master/photo_2017-09-02_14-03-35.jpg)
+![alt text](https://github.com/chingyuchen/CYCFBBot/blob/master/photo_2017-09-02_14-03-35.jpg =320x313)
           
-Following the greeting, the CYCBot will operates the default program. Here the default 
+Following the greeting, the CYCFBBot will operates the default program. Here the default 
 program asks the user to choose a option as above figures.
+
+### "/default" command
+The default program is the standby running program. Whenever a program execution is 
+finished, CYCFBBot will automatically run the standby program. For example, as the 
+description for the "/start" command operation above, after CYCFBbot finishes the 
+start program execution (greeting to the user), CYCFBbot runs the default program. 
+Here the default program asks users to choose a option. CYCFBbot also runs default 
+program when recieves "/default" command.                
+![alt text]()
+
+ 
+
+
               
 ## Usage
 ### Run the CYCFBbot
