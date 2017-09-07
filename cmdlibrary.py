@@ -16,45 +16,53 @@ import json
 
 ################################################################################
 
-class CmdLibrary(object):
+# The dict that maps the commands to the corresponding pgm class name.
+command_class = {}
 
-    '''
-    CmdLibrary is a object that store all the commands and the corresponding 
-    program class of a designed facebook bot.
-    '''
+# The dict that maps the commands to the corresponding pgm class.
+command_libarary = {}
 
-    # The dict that maps the commands to the corresponding pgm class name.
-    command_class = {}
+with open('commandsmap.json', 'r') as fp:
+    command_class = json.load(fp)
+fp.close()
 
-#-------------------------------------------------------------------------------
-
-    def __init__(self):
-        
-        '''
-        Initialized the CmdLibrary that maps the commands to the command program
-        objects.
-        '''
-
-        # The dict that maps the commands to the corresponding pgm class.
-        self.command_libarary = {}
-
-        with open('commandsmap.json', 'r') as fp:
-            CmdLibrary.command_class = json.load(fp)
-        fp.close()
-
-        for key in CmdLibrary.command_class:
-            try:
-                self.command_libarary[key] = locate(CmdLibrary.command_class[key])()
-            except:
-                print(key + " class not exist")
+for key in command_class:
+    try:
+        command_libarary[key] = locate(command_class[key])()
+    except:
+        print(key + " class not exist")
     
     
 ################################################################################
 
-if __name__ == "__main__":
-    '''
-    For testing
-    '''
-    testCmdLibrary = CmdLibrary()
-    
+def add_cmdpgm(pgmcmd):
+    pgm = Pgm(pgmcmd)
+    cmd_libarary[pgmcmd] = pgm
+
+def remove_cmdpgm(pgmcmd):
+    if pgmcmd in cmd_library:
+        cmd_library.pop()
+        return True
+    else:
+        return False
+
+def add_pgm_state(pgmcmd, statename, check_cmd_function, state_function):
+    if pgmcmd not in cmd_library:
+        print("error, no such program exist")
+        return
+    # check other arguments valid
+    # check if statename exist already
+    pgm = cmd_library[pgmcmd]
+    pgm.add(statename, check_cmd_function, state_function)
+
+def set_pgm_state(pgmcmd, statename, check_cmd_function=None, state_function=None):
+    #check arguments
+    pgm = cmd_library[pgmcmd]
+    pgm.set(statename, check_cmd_function, state_function)
+
+def remove_pgm_state(pgmcmd, statename):
+    # check valid/can remove 
+    pgm = cmd_library[pgmcmd]
+    pgm.remove(statename)
+
    

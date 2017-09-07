@@ -11,30 +11,16 @@ Copyright (c) 2017 Ching-Yu Chen
 '''
 ################################################################################
 
-import abc
-from pgmabstract import PgmAbstract     
+from pgm import Pgm     
 from pymessenger.bot import Bot
 
 ################################################################################
 
-class Help(PgmAbstract):
+class Help(Pgm):
 
     ''' 
     "/help" command program. Send information of the commands to the user.
     '''
-    
-    name = "/help"
-    
-
-    # enum of the state of the program
-
-    START = 0
-    END = -1
-
-#-------------------------------------------------------------------------------
-
-    def check_start(self, data):
-        return True
 
 #-------------------------------------------------------------------------------
 
@@ -50,7 +36,7 @@ class Help(PgmAbstract):
             '/start : start program\n'
             '/help : help program')
 
-        return [Help.END, None]
+        return ["END", None]
 
 #-------------------------------------------------------------------------------
         
@@ -63,9 +49,7 @@ class Help(PgmAbstract):
         are specified.
         '''
 
-        self.statefun = [self.state_start]
-        self.check_cmd = [self.check_start]
-        super().__init__()
+        super().__init__("/help")
 
 #-------------------------------------------------------------------------------
 
@@ -74,4 +58,7 @@ if __name__ == "__main__":
     '''
     For testing
     '''
+
+    user = input("type user id : ")
     helpclass = Help()
+    helpclass.state_start(user)

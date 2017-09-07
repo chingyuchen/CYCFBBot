@@ -17,6 +17,7 @@ from cmdanalyzer import CmdAnalyzer
 import msganalyzer
 import fbmq
 from fbmq import Page
+import cmdlibrary
 
 ################################################################################
 
@@ -45,8 +46,9 @@ cmd_analyzer = CmdAnalyzer()
 portnum = 5000
 
 #
-invalidmsg = 'Not a valid command. Please retype the command or type /help for'
+invalidmsg = 'Not a valid command. Please retype the command or type /help for'\
 ' command instructions.'
+
 ################################################################################
 
 @app.route('/', methods=['POST'])
@@ -95,18 +97,26 @@ def run():
 def add_cmdpgm(pgmcmd):
     # check valid pgmname, valid string type
     # static method in module of cmdanalyzer
-    cmdanalyzer.add_cmdpgm(pgmcmd, Pgm(pgmcmd))
+    cmdlibrary.add_cmdpgm(pgmcmd)
 
 def remove_cmdpgm(pgmcmd):
     # check valid
-    cmdanalyzer.remove_cmdpgm(pgmcmd)
+    # start and default can't be removed, but can be overwrite
+    cmdlibrary.remove_cmdpgm(pgmcmd)
  
 def add_pgm_state(pgmcmd, statename, check_cmd_function, state_function):
     # check valid arguments
     # check if function returns state
     # should use another function to help user create state function
-    cmdanalyzer.add_pgm_state(pgmcmd, statename, check_cmd_function, \
+    cmdlibrary.add_pgm_state(pgmcmd, statename, check_cmd_function, \
             state_function)
+
+def set_pgm_state(pgmcmd, statename, check_cmd_function=None, state_function=None):
+    cmdlibrary.set_pgm_state(pgmcmd, statename, check_cmd_function, \
+            state_function)
+
+def remove_pgm_state(pgmcmd, statename):
+    cmdlibrary.remove_pgm_state(pgmcmd, statename)
 
 #-------------------------------------------------------------------------------
 

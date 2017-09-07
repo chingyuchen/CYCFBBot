@@ -11,14 +11,13 @@ Copyright (c) 2017 Ching-Yu Chen
 '''
 ################################################################################
 
-import abc
-from pgmabstract import PgmAbstract
+from pgm import Pgm
 from pymessenger.bot import Bot
 import msganalyzer
 
 ################################################################################
 
-class Default(PgmAbstract):
+class Default(Pgm):
     
     ''' 
     "/default" command program. Ask the user to choose between provided options
@@ -26,21 +25,6 @@ class Default(PgmAbstract):
     next state function of the program. The default program is the standby 
     running program.
     '''
-
-    name = "/default"
-    
-
-    # enum of the state of the program
-
-    START = 0
-    RESPOND = 1
-    END = -1
-
-
-#-------------------------------------------------------------------------------
-
-    def check_start(self, data=None):
-        return True
 
 #-------------------------------------------------------------------------------
 
@@ -55,7 +39,7 @@ class Default(PgmAbstract):
         text = "Please choose an option"
         self.bot.send_button_message(user, text, buttons)
 
-        return [Default.RESPOND, args]
+        return ["RESPOND", args]
 
 #-------------------------------------------------------------------------------
 
@@ -88,7 +72,7 @@ class Default(PgmAbstract):
         code implemented here
         '''
         
-        return [Default.END, args]
+        return ["END", args]
         
 
 #-------------------------------------------------------------------------------    
@@ -102,9 +86,9 @@ class Default(PgmAbstract):
         are specified.
         '''
 
-        self.statefun = [self.state_start, self.state_respond]
-        self.check_cmd = [self.check_start, self.check_respond]
-        super().__init__()
+        super().__init__("/default")
+        self.statefun = {"START" : self.state_start, "RESPOND" : self.state_respond}
+        self.check_cmd = {"START" : self.check_start, "RESPOND": self.check_respond}
         
 
 ################################################################################
@@ -115,5 +99,7 @@ if __name__ == "__main__":
     For testing
     '''
    
+    user = input("type user id : ")
     default_class = Default()
+    default_class.state_start(user)
 

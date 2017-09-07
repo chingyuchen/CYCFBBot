@@ -11,31 +11,18 @@ Copyright (c) 2017 Ching-Yu Chen
 '''
 ################################################################################
 
-import abc
-from pgmabstract import PgmAbstract     
+from pgm import Pgm     
 import fbmq
 from fbmq import Page
 from pymessenger.bot import Bot
 
 ################################################################################
 
-class Start(PgmAbstract):
+class Start(Pgm):
 
     ''' 
     "/start" command program. Send greeting message. 
     '''
-
-    name = "/start"
-
-    # enum of the state of the program
-
-    START = 0
-    END = -1
-
-#-------------------------------------------------------------------------------
-
-    def check_start(self, data):
-        return True
 
 #-------------------------------------------------------------------------------
 
@@ -52,7 +39,7 @@ class Start(PgmAbstract):
         self.bot.send_text_message(user, 'Hi, {first_name}! this is start program.'\
             ' Please type /help for commands instruction.'.format(first_name=name))
 
-        return [Start.END, None]
+        return ["END", None]
 
 #-------------------------------------------------------------------------------
         
@@ -65,6 +52,8 @@ class Start(PgmAbstract):
         are specified.
         '''
         
+        super().__init__("/start")
+
         try:
             TOKEN = ""
             with open('Token', 'r') as f:
@@ -76,10 +65,6 @@ class Start(PgmAbstract):
 
         self.page = fbmq.Page(TOKEN)
 
-        self.statefun = [self.state_start]
-        self.check_cmd = [self.check_start]
-        super().__init__()
-
 ################################################################################
 
 if __name__ == "__main__":
@@ -87,5 +72,8 @@ if __name__ == "__main__":
     '''
     For testing
     '''
-
+    user = input("type user id : ")
     startclass1 = Start()
+    startclass1.state_start(user)
+    startclass1.run(user, "START")
+    

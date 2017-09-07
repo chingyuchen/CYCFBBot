@@ -12,8 +12,13 @@ Copyright (c) 2017 Ching-Yu Chen
 ################################################################################
 
 import json
-from cmdlibrary import *
+import cmdlibrary 
 import msganalyzer
+
+################################################################################
+
+user_state = {}
+cmd_libarary = cmdlibrary.command_libarary 
 
 ################################################################################
 
@@ -26,14 +31,15 @@ class CmdAnalyzer:
     '''
 
     # the dict that maps the user to the current running program state
-    user_state = {}
+    #user_state = {}
 
 #-------------------------------------------------------------------------------
 
     def __init__(self):
 
         # the dict that maps the commands to the program 
-        self._command_libarary = CmdLibrary().command_libarary 
+        #self._command_libarary = CmdLibrary().command_libarary 
+        pass
         
 #-------------------------------------------------------------------------------
     
@@ -45,8 +51,8 @@ class CmdAnalyzer:
         It runs the "/start" cmd and then run the "/default" cmd.
         '''
         
-        state_inform = {'cmd' : '/start', 'state_num' : 0, 'arg' : arg}
-        CmdAnalyzer.user_state[userid] = state_inform
+        state_inform = {'cmd' : '/start', 'state' : 'START', 'arg' : arg}
+        user_state[userid] = state_inform
 
 #-------------------------------------------------------------------------------
 
@@ -57,7 +63,7 @@ class CmdAnalyzer:
         '''
 
         [chat_id, msg_type, msg_content] = msganalyzer.glance_msg(data)
-        state_inform = CmdAnalyzer.user_state.get(chat_id, None)
+        state_inform = user_state.get(chat_id, None)
         
         if state_inform is None:
             CmdAnalyzer.intl_execute(chat_id)
@@ -73,9 +79,9 @@ class CmdAnalyzer:
         
         else:
             commandi = msg_content['text']
-            if commandi in self._command_libarary:  # check new pgm cmd
+            if commandi in cmd_libarary:  # check new pgm cmd
                 state_inform['cmd'] = commandi
-                state_inform['state_num'] = 0
+                state_inform['state'] = "START" 
                 state_inform['check_cmd_fun'] = None
                 state_inform['arg'] = None
                 return True
@@ -90,29 +96,32 @@ class CmdAnalyzer:
         Execute the chat_id command
         '''
 
-        state_inform = CmdAnalyzer.user_state.get(chat_id)
-        classi = self._command_libarary[state_inform['cmd']]
+        state_inform = user_state.get(chat_id)
+        classi = cmd_libarary[state_inform['cmd']]
         
         nextstate_info = \
-        classi.run(chat_id, state_inform['state_num'], msg_content, state_inform['arg'])
+        classi.run(chat_id, state_inform['state'], msg_content, state_inform['arg'])
 
-        state_inform['state_num'] = nextstate_info[0]
+        state_inform['state'] = nextstate_info[0]
         state_inform['arg'] = nextstate_info[1]  
-        state_inform['check_cmd_fun'] = \
-        classi.check_cmd[state_inform['state_num']]
+        if state_inform['state'] != "END": 
+            state_inform['check_cmd_fun'] = \
+            classi.check_cmd[state_inform['state']]
 
-        if state_inform['state_num'] is -1: # pgm ends, run the default pgm
+        if state_inform['state'] == "END": # pgm ends, run the default pgm
           
-            classi = self._command_libarary['/default']
+            classi = cmd_libarary['/default']
             state_inform['cmd'] = '/default'
-            state_inform['state_num'] = 0
+            state_inform['state'] = "START" 
+            state_inform['check_cmd_fun'] = \
+            classi.check_cmd[state_inform['state']]
 
-            nextstate_info = classi.run(chat_id, 0)
+            nextstate_info = classi.run(chat_id, "START")
             
-            state_inform['state_num'] = nextstate_info[0]
+            state_inform['state'] = nextstate_info[0]
             state_inform['arg'] = nextstate_info[1]
             state_inform['check_cmd_fun'] = \
-            classi.check_cmd[state_inform['state_num']]
+            classi.check_cmd[state_inform['state']]
 
         
 ################################################################################
