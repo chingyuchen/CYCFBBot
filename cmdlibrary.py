@@ -13,6 +13,7 @@ Copyright (c) 2017 Ching-Yu Chen
 
 from pydoc import locate
 import json
+from pgm import Pgm
 
 ################################################################################
 
@@ -20,7 +21,7 @@ import json
 command_class = {}
 
 # The dict that maps the commands to the corresponding pgm class.
-command_libarary = {}
+command_library = {}
 
 with open('commandsmap.json', 'r') as fp:
     command_class = json.load(fp)
@@ -28,7 +29,7 @@ fp.close()
 
 for key in command_class:
     try:
-        command_libarary[key] = locate(command_class[key])()
+        command_library[key] = locate(command_class[key])()
     except:
         print(key + " class not exist")
     
@@ -36,33 +37,71 @@ for key in command_class:
 ################################################################################
 
 def add_cmdpgm(pgmcmd):
-    pgm = Pgm(pgmcmd)
-    cmd_libarary[pgmcmd] = pgm
+    if type(pgmcmd) is str:
+        pgm = Pgm(pgmcmd)
+        command_library[pgmcmd] = pgm
+    else:
+        raise TypeError("Command of the new program must be string")
+
+#------------------------------------------------------------------------------
+
+def get_pgmstates(pgmcmd):
+    if type(pgmcmd) is str:
+        if pgmcmd in command_library:
+            return command_library[pgmcmd].statefun.keys()
+        else:
+            raise ValueError("Program doesn't exist")
+    else:   
+        raise TypeError("Command of the program must be string")
+
+#------------------------------------------------------------------------------
 
 def remove_cmdpgm(pgmcmd):
-    if pgmcmd in cmd_library:
-        cmd_library.pop()
-        return True
+    if type(pgmcmd) is str:
+        if pgmcmd == "/start" or pgmcmd == "/default":
+            raise ValueError("start or default program can't be removed. Can be overwrite instead.")
+        elif pgmcmd in command_library:
+            command_library.pop(pgmcmd)
+            return True
+        else:
+            raise ValueError("Program doesn't exist")
     else:
+        raise TypeError("Command of the program must be string")
         return False
 
+#------------------------------------------------------------------------------
+
 def add_pgm_state(pgmcmd, statename, check_cmd_function, state_function):
-    if pgmcmd not in cmd_library:
-        print("error, no such program exist")
-        return
-    # check other arguments valid
-    # check if statename exist already
-    pgm = cmd_library[pgmcmd]
-    pgm.add(statename, check_cmd_function, state_function)
+    if statename is None or check_cmd_function is None or state_function is None:
+        raise ValueError("Input arguments can't be None")
+    if pgmcmd not in command_library:
+        raise ValueError("Program doesn't exist. Use add_cmdpgm to add the pgm first.")
+    else:
+        pgm = command_library[pgmcmd]
+        pgm.add(statename, check_cmd_function, state_function)
+
+#------------------------------------------------------------------------------
 
 def set_pgm_state(pgmcmd, statename, check_cmd_function=None, state_function=None):
-    #check arguments
-    pgm = cmd_library[pgmcmd]
-    pgm.set(statename, check_cmd_function, state_function)
+    if statename is None or (check_cmd_function is None and state_function is None):
+        raise ValueError("Input arguments can't be None")
+    elif pgmcmd not in command_library:
+        raise ValueError("Program doesn't exist. Use add_cmdpgm add the pgm first.")
+    else:
+        pgm = command_library[pgmcmd]
+        pgm.set(statename, check_cmd_function, state_function)
+
+#------------------------------------------------------------------------------
 
 def remove_pgm_state(pgmcmd, statename):
-    # check valid/can remove 
-    pgm = cmd_library[pgmcmd]
-    pgm.remove(statename)
+    if type(pgmcmd) is not str or type(statename) is not str:
+        raise TypeError("arguments must be string")
+    elif pgmcmd not in command_library:
+        raise ValueError("Program doesn't exsit, Use add_cmdpgm add pgm first.")
+    elif statename == "START":
+        raise ValueError("START state can't be removed. Can be overwrite instead")
+    else:
+        pgm = command_library[pgmcmd]
+        pgm.remove(statename)
 
-   
+

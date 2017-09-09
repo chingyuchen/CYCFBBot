@@ -79,46 +79,103 @@ def handle_incoming_messages():
 ################################################################################
 
 def set_port(num):
-    #need to add catch exception
+    global portnum
     portnum = num 
 
+#-------------------------------------------------------------------------------
+
+def get_port():
+    global portnum
+    return portnum
+
+#-------------------------------------------------------------------------------
+
 def set_invalid_cmd_msg(msg):
-    # need to check string type
-    invalidmsg = msg
+    if type(msg) is str:
+        global invalidmsg
+        invalidmsg = msg
+    else:
+        raise TypeError("Invalid command message must be string")
+
+#-------------------------------------------------------------------------------
 
 def run():
 
     ''' 
     Starts running the bot
     '''
-
     app.run(port=portnum, debug=True)
 
+#-------------------------------------------------------------------------------
+
 def add_cmdpgm(pgmcmd):
-    # check valid pgmname, valid string type
-    # static method in module of cmdanalyzer
-    cmdlibrary.add_cmdpgm(pgmcmd)
-
-def remove_cmdpgm(pgmcmd):
-    # check valid
-    # start and default can't be removed, but can be overwrite
-    cmdlibrary.remove_cmdpgm(pgmcmd)
- 
-def add_pgm_state(pgmcmd, statename, check_cmd_function, state_function):
-    # check valid arguments
-    # check if function returns state
-    # should use another function to help user create state function
-    cmdlibrary.add_pgm_state(pgmcmd, statename, check_cmd_function, \
-            state_function)
-
-def set_pgm_state(pgmcmd, statename, check_cmd_function=None, state_function=None):
-    cmdlibrary.set_pgm_state(pgmcmd, statename, check_cmd_function, \
-            state_function)
-
-def remove_pgm_state(pgmcmd, statename):
-    cmdlibrary.remove_pgm_state(pgmcmd, statename)
+    if type(pgmcmd) is str:
+        cmdlibrary.add_cmdpgm(pgmcmd)
+    else:
+        raise TypeError("Command of the new program must be string")
 
 #-------------------------------------------------------------------------------
+
+def get_pgmcmds():
+    return cmdlibrary.command_library.keys()
+
+#-------------------------------------------------------------------------------
+
+def get_pgmstates(pgmcmd):
+    return cmdlibrary.get_pgmstates(pgmcmd)
+
+#-------------------------------------------------------------------------------
+
+def remove_cmdpgm(pgmcmd):
+    if type(pgmcmd) is str:
+        if pgmcmd in cmdlibrary.command_library:
+            if pgmcmd == "/start" or pgmcmd == "/default":
+                raise ValueError("/start and /default programs can't be removed")
+            else: 
+                cmdlibrary.remove_cmdpgm(pgmcmd)
+        else:
+            raise ValueError("program doesn't exist")
+    else:
+        raise TypeError("Command of the program must be string")
+
+#-------------------------------------------------------------------------------
+
+def add_pgm_state(pgmcmd, statename, check_cmd_function, state_function):
+    # check if function returns state
+    # should use another function to help user create state function
+    if statename is None or check_cmd_function is None or state_function is None:
+        raise ValueError("Input arguments can't be None")
+    elif pgmcmd not in cmdlibrary.command_library:
+        raise ValueError("Program doesn't exist. Use add_cmdpgm add the pgm first.")
+    else:
+        cmdlibrary.add_pgm_state(pgmcmd, statename, check_cmd_function, \
+            state_function)
+
+#-------------------------------------------------------------------------------
+
+def set_pgm_state(pgmcmd, statename, check_cmd_function=None, state_function=None):
+
+    if statename is None or (check_cmd_function is None and state_function is None):
+        raise ValueError("Input arguments can't be None")
+    elif pgmcmd not in cmdlibrary.command_library:
+        raise ValueError("Program doesn't exist. Use add_cmdpgm add the pgm first.")
+    else:
+        cmdlibrary.set_pgm_state(pgmcmd, statename, check_cmd_function, \
+            state_function)
+
+#-------------------------------------------------------------------------------
+
+def remove_pgm_state(pgmcmd, statename):
+    if type(pgmcmd) is not str or type(statename) is not str:
+        raise TypeError("arguments must be string")
+    elif pgmcmd not in cmdlibrary.command_library:
+        raise ValueError("Program doesn't exsit, Use add_cmdpgm add pgm first.")
+    elif statename == "START":
+        raise ValueError("START state can't be removed")
+    else:
+        cmdlibrary.remove_pgm_state(pgmcmd, statename)
+
+################################################################################
 
 if __name__ == '__main__':
 

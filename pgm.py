@@ -10,13 +10,10 @@ Copyright (c) 2017 Ching-Yu Chen
 '''
 ################################################################################
 
-#import abc
-#from abc import ABCMeta
 from pymessenger.bot import Bot
 
 ################################################################################
 
-#class PgmAbstract(object, metaclass=ABCMeta):
 class Pgm(object):
 
     '''
@@ -26,8 +23,6 @@ class Pgm(object):
 
     '''
 
-    #__metaclass__ = abc.ABCMeta
-    
 #--------------------------- state function example ----------------------------
 
     def check_start(self, data=None):
@@ -100,5 +95,36 @@ class Pgm(object):
             raise NotImplementedError('State function must return next state inform')
 
 
-    
+#------------------------------------------------------------------------------
 
+    def add(self, statename, check_cmd_function, state_function):
+        # check function 
+        if statename is None or check_cmd_function is None or state_function is None:
+            raise ValueError("Input arguments can't be None")
+        if type(statename) is not str:
+            raise TypeError("statename must be string")
+        else:
+            self.statefun[statename] = state_function
+            self.check_cmd[statename] = check_cmd_function
+    
+#------------------------------------------------------------------------------
+
+    def set(self, statename, check_cmd_function=None, state_function=None):
+        # check function 
+        if statename is None or (check_cmd_function is None and state_function is None):
+            raise ValueError("Input arguments can't be None")
+        if check_cmd_function is not None:
+            self.check_cmd[statename] = check_cmd_function
+        if state_function is not None:
+            self.statefun[statename] = state_function
+
+#------------------------------------------------------------------------------
+
+    def remove(self, statename):
+        if statename not in self.statefun:
+            raise ValueError("State doesn't exist.")
+        elif statename == "START":
+            raise ValueError("START state can't be removed")
+        else:
+            self.statefun.pop(statename)
+            self.check_cmd.pop(statename)

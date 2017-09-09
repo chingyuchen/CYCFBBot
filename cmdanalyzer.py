@@ -18,7 +18,7 @@ import msganalyzer
 ################################################################################
 
 user_state = {}
-cmd_libarary = cmdlibrary.command_libarary 
+cmd_library = cmdlibrary.command_library 
 
 ################################################################################
 
@@ -79,10 +79,11 @@ class CmdAnalyzer:
         
         else:
             commandi = msg_content['text']
-            if commandi in cmd_libarary:  # check new pgm cmd
+            print("new command pgm")
+            if commandi in cmd_library:  # check new pgm cmd
                 state_inform['cmd'] = commandi
                 state_inform['state'] = "START" 
-                state_inform['check_cmd_fun'] = None
+                state_inform['check_cmd_fun'] = cmd_library[commandi].check_cmd["START"]
                 state_inform['arg'] = None
                 return True
             else:
@@ -97,7 +98,7 @@ class CmdAnalyzer:
         '''
 
         state_inform = user_state.get(chat_id)
-        classi = cmd_libarary[state_inform['cmd']]
+        classi = cmd_library[state_inform['cmd']]
         
         nextstate_info = \
         classi.run(chat_id, state_inform['state'], msg_content, state_inform['arg'])
@@ -110,7 +111,7 @@ class CmdAnalyzer:
 
         if state_inform['state'] == "END": # pgm ends, run the default pgm
           
-            classi = cmd_libarary['/default']
+            classi = cmd_library['/default']
             state_inform['cmd'] = '/default'
             state_inform['state'] = "START" 
             state_inform['check_cmd_fun'] = \
