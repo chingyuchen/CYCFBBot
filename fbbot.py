@@ -60,17 +60,19 @@ def handle_incoming_messages():
     '''
     
     data = request.json
+    print("data = " + str(data) + "\n")
     [chat_id, msg_type, msg_content] = msganalyzer.glance_msg(data)
 
     if chat_id == botid:
         return "ok"
 
     if msg_type is not 'state':
+        print("not state")
         if cmd_analyzer.is_command(data): 
             cmd_analyzer.execute(chat_id, msg_content)
         else:
             bot.send_text_message(chat_id, invalidmsg)
-        
+
     else:
         pass
 
