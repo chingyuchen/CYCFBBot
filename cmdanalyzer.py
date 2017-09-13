@@ -79,7 +79,6 @@ class CmdAnalyzer:
         
         else:
             commandi = msg_content['text']
-            print("new command pgm")
             if commandi in cmd_library:  # check new pgm cmd
                 state_inform['cmd'] = commandi
                 state_inform['state'] = "START" 
@@ -102,9 +101,10 @@ class CmdAnalyzer:
         
         nextstate_info = \
         classi.run(chat_id, state_inform['state'], msg_content, state_inform['arg'])
-
         state_inform['state'] = nextstate_info[0]
         state_inform['arg'] = nextstate_info[1]  
+        print("state_info = " + str(state_inform))
+
         if state_inform['state'] != "END": 
             state_inform['check_cmd_fun'] = \
             classi.check_cmd[state_inform['state']]

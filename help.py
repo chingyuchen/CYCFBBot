@@ -12,7 +12,7 @@ Copyright (c) 2017 Ching-Yu Chen
 ################################################################################
 
 from pgm import Pgm     
-from pymessenger.bot import Bot
+import messenger
 
 ################################################################################
 
@@ -31,7 +31,7 @@ class Help(Pgm):
         return the enum of the end state.
         '''
 
-        self.bot.send_text_message(user, \
+        messenger.send_text(user, \
             '/default : default program.\n'
             '/start : start program\n'
             '/help : help program')

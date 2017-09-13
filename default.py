@@ -12,10 +12,9 @@ Copyright (c) 2017 Ching-Yu Chen
 ################################################################################
 
 from pgm import Pgm
-from pymessenger.bot import Bot
 import msganalyzer
-import fbmq
-from fbmq import Attachment, Template, QuickReply, Page
+import requests
+import messenger
 
 ################################################################################
 
@@ -39,7 +38,7 @@ class Default(Pgm):
         buttons = [{"type":"postback", "title":"Opt1", "payload":"Opt1"},
                     {"type":"postback", "title":"Opt2", "payload":"Opt2"}]
         text = "Please choose an option"
-        self.bot.send_button_message(user, text, buttons)
+        messenger.send_buttons(user, text, buttons)
 
         return ["RESPOND", args]
 
@@ -71,14 +70,22 @@ class Default(Pgm):
         '''
         
         quick_replies = [
-            QuickReply(title="Quick1", payload="PICK_Q1"),
-            QuickReply(title="Quick2", payload="PICK_Q2"),
-            {"content_type":"location", "title":"Share Location", "payload":"<POSTBACK_PAYLOAD>"}
+            {
+                "content_type":"text",
+                "title":"Quick1",
+                "payload":"Quick1"
+            },
+            {
+                "content_type":"text",
+                "title":"Quick2",
+                "payload":"Quick2"
+            },
+            {
+                "content_type":"location"
+            }
         ]
 
-        self.page.send(user, "Please choose a quick reply option",
-            quick_replies=quick_replies,
-            metadata="DEVELOPER_DEFINED_METADATA")
+        messenger.send_quickreply(user, "Please choose quick option", quick_replies)
         
         return ["QUICKRESPOND", args]
         
@@ -94,8 +101,13 @@ class Default(Pgm):
 
         [chat_id, msg_type, msg_content] = msganalyzer.glance_msg(data)
         
-        if msg_type is 'sent_msg' and 'text' in msg_content:
-            if msg_content['text'] == 'Quick1' or msg_content['text'] == 'Quick2':
+        if msg_type is 'sent_msg': 
+            if 'text' in msg_content:
+                if msg_content['text'] == 'Quick1' or msg_content['text'] == 'Quick2':
+                    return True
+                else:
+                    return False
+            elif 'attachments' in msg_content and msg_content['attachments'][0]['type'] == 'location':
                 return True
             else:
                 return False
@@ -109,9 +121,11 @@ class Default(Pgm):
         '''
         The respond state function. Return enum of the end state function and args.
         '''
-
-        self.page.send(user, "Your option is {option}, end execution!".format(\
+        if 'text' in msg_content:
+            messenger.send_text(user, "Your option is {option}, end execution!".format(\
                 option=msg_content['text']))
+        else:
+            messenger.send_text(user, "Got your location!")
 
         return ["END", None]
 
@@ -140,17 +154,6 @@ class Default(Pgm):
                 "QUICKRESPOND" : self.check_quickrespond
         }
         
-
-        try:
-            TOKEN = ""
-            with open('Token', 'r') as f:
-                TOKEN = f.read().strip()
-                f.close()
-                assert(len(TOKEN) != 0)
-        except:
-            print("Token file doesn't exit or invalid token")
-
-        self.page = fbmq.Page(TOKEN)
 
 ################################################################################
 

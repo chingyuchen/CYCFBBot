@@ -11,10 +11,8 @@ Copyright (c) 2017 Ching-Yu Chen
 '''
 ################################################################################
 
-from pgm import Pgm     
-import fbmq
-from fbmq import Page
-from pymessenger.bot import Bot
+from pgm import Pgm    
+import messenger
 
 ################################################################################
 
@@ -33,10 +31,9 @@ class Start(Pgm):
         of the end state function. args provide the user name.
         '''
 
-        user_profile = self.page.get_user_profile(user)
-        name = user_profile["first_name"]
+        name = messenger.get_user_info(user)["first_name"]
 
-        self.bot.send_text_message(user, 'Hi, {first_name}! this is start program.'\
+        messenger.send_text(user, 'Hi, {first_name}! this is start program.'\
             ' Please type /help for commands instruction.'.format(first_name=name))
 
         return ["END", None]
@@ -53,17 +50,6 @@ class Start(Pgm):
         '''
         
         super().__init__("/start")
-
-        try:
-            TOKEN = ""
-            with open('Token', 'r') as f:
-                TOKEN = f.read().strip()
-                f.close()
-                assert(len(TOKEN) != 0)
-        except:
-            print("Token file doesn't exit or invalid token")
-
-        self.page = fbmq.Page(TOKEN)
 
 ################################################################################
 

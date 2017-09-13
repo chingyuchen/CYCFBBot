@@ -11,13 +11,11 @@ Copyright (c) 2017 Ching-Yu Chen
 ################################################################################
 
 from flask import Flask, request
-from pymessenger.bot import Bot
 import requests
 from cmdanalyzer import CmdAnalyzer
 import msganalyzer
-import fbmq
-from fbmq import Page
 import cmdlibrary
+import messenger
 
 ################################################################################
 
@@ -30,11 +28,9 @@ try:
 except:
     print("Token file doesn't exit or invalid token")
  
-# object send message to user
-bot = Bot(TOKEN)
 
 # bot id
-botid = fbmq.Page(TOKEN).page_id
+botid = messenger.get_page_info()['id']
 
 # Flask object
 app = Flask(__name__)
@@ -60,18 +56,17 @@ def handle_incoming_messages():
     '''
     
     data = request.json
-    print("data = " + str(data) + "\n")
+    #print("data = " + str(data) + "\n")
     [chat_id, msg_type, msg_content] = msganalyzer.glance_msg(data)
 
     if chat_id == botid:
         return "ok"
 
     if msg_type is not 'state':
-        print("not state")
         if cmd_analyzer.is_command(data): 
             cmd_analyzer.execute(chat_id, msg_content)
         else:
-            bot.send_text_message(chat_id, invalidmsg)
+            messenger.send_text(chat_id, invalidmsg)
 
     else:
         pass
@@ -106,7 +101,8 @@ def run():
     ''' 
     Starts running the bot
     '''
-    app.run(port=portnum, debug=True)
+    #app.run(port=portnum, debug=True)
+    app.run(port=portnum, debug=False)
 
 #-------------------------------------------------------------------------------
 
