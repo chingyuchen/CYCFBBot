@@ -103,7 +103,7 @@ class CmdAnalyzer:
         classi.run(chat_id, state_inform['state'], msg_content, state_inform['arg'])
         state_inform['state'] = nextstate_info[0]
         state_inform['arg'] = nextstate_info[1]  
-        print("state_info = " + str(state_inform))
+        #print("state_info = " + str(state_inform))
 
         if state_inform['state'] != "END": 
             state_inform['check_cmd_fun'] = \

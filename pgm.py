@@ -1,25 +1,25 @@
 ################################################################################
 '''
-File: pgmabstract.py
+File: pgm.py
 Author : Ching-Yu Chen
 
-Description: pgmabstract.py contains the abstract class, PgmAbstract, where 
-PgmAbstract is the abstract class of the command program in facebook bot.
+Description: pgm.py contains the super class, Pgm, of the CYCFBBot programs.
 
 Copyright (c) 2017 Ching-Yu Chen
 '''
 ################################################################################
 
-from pymessenger.bot import Bot
+import messenger
 
 ################################################################################
 
 class Pgm(object):
 
     '''
-    PgmAbstract is an abstract class of the command program in facebook bot. 
-    Subclass must define the functions to execute / check valid command function
-    / enum of the state in each state of the program. 
+    Pgm is a super class of the command program in facebook bot. 
+    Subclass must define the state functions to execute and the check valid 
+    command functions. The state functions must return the next state and
+    the arguments of the next state.
 
     '''
 
@@ -43,7 +43,7 @@ class Pgm(object):
         and args.
         '''    
 
-        self.bot.send_text_message(user, "This is {pgmcmd} program start "\
+        messenger.send_text(user, "This is {pgmcmd} program start "\
                 "state".format(pgmcmd=self.pgmcmd))
 
         return ["END", None]
@@ -66,10 +66,6 @@ class Pgm(object):
         with open('Token', 'r') as f:
             TOKEN = f.read().strip()
         f.close()
-
-        
-        # Object of pymessenger.bot, sending and receiving messages to facebook users
-        self.bot = Bot(TOKEN)
         
         # self.statefun, the list stores the state function.
         self.statefun = {"START": self.state_start} 
@@ -98,6 +94,11 @@ class Pgm(object):
 #------------------------------------------------------------------------------
 
     def add(self, statename, check_cmd_function, state_function):
+
+        '''
+        Add check_cmd function and state_finction mapping the statename to the 
+        program.
+        '''
         # check function 
         if statename is None or check_cmd_function is None or state_function is None:
             raise ValueError("Input arguments can't be None")
@@ -110,6 +111,12 @@ class Pgm(object):
 #------------------------------------------------------------------------------
 
     def set(self, statename, check_cmd_function=None, state_function=None):
+
+        '''
+        Set the state and check function mapping to the statename with the input
+        state_function and check_cmd_function
+        '''
+
         # check function 
         if statename is None or (check_cmd_function is None and state_function is None):
             raise ValueError("Input arguments can't be None")
@@ -121,6 +128,11 @@ class Pgm(object):
 #------------------------------------------------------------------------------
 
     def remove(self, statename):
+
+        '''
+        Remove the state (statename) from the program
+        '''
+
         if statename not in self.statefun:
             raise ValueError("State doesn't exist.")
         elif statename == "START":

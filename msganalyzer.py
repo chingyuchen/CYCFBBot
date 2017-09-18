@@ -1,6 +1,21 @@
 ################################################################################
+'''
+File : msganalyzer.py
+Author: Ching-Yu Chen
+
+Description:
+msganalyzer module analyze the post of facebook message.
+
+Copyright (c) 2017 Ching-Yu Chen
+'''
+################################################################################
 
 def isState(entry):
+
+    '''
+    Check if the entry is state. Return true or false.
+    '''
+
     if 'messaging' not in entry:
         return True 
     else:
@@ -10,9 +25,13 @@ def isState(entry):
         else:
             return True 
 
-
+#-------------------------------------------------------------------------------
 
 def glance_msg(data):
+
+    '''
+    Analyze the message data. Return the type, content and chat_id.
+    '''
 
     entry = data['entry'][0]
     if isState(entry):

@@ -1,6 +1,22 @@
+################################################################################
+'''
+File : messenger.py
+Author: Ching-Yu Chen
+
+Description:
+The messenger module includes methods of sending different type of message from
+the facebook messenger bot to the users.
+
+Copyright (c) 2017 Ching-Yu Chen
+'''
+################################################################################
+
 import requests
 import json
 
+################################################################################
+
+# geocoder key
 key = ""
 try:
     with open('geocoder_key', 'r') as f:
@@ -11,6 +27,7 @@ except:
     print("error in accessing geocoder key")
 
 
+# Token of the bot
 try:
     TOKEN = ""
     with open('Token', 'r') as f:
@@ -21,11 +38,17 @@ except:
     print("Token file doesn't exit or invalid token")
 
 
+# url of post
 urlS = "https://graph.facebook.com/v2.6/me/messages?access_token="
 
-#-------------------------------------------------------------------------------
+################################################################################
 
 def send_text(user, text=None):
+    
+    '''
+    Send text message to the user
+    '''
+
     data = {
                 "recipient": {"id": user},
                 "message": {
@@ -39,6 +62,11 @@ def send_text(user, text=None):
 #-------------------------------------------------------------------------------
 
 def send_quickreply(user, text=None, quick_replies=None):
+
+    ''' 
+    Send quick reply message to the user, with text and quick_replies option.
+    '''
+
     data = {
                 "recipient": {"id": user},
                 "message": {
@@ -52,6 +80,11 @@ def send_quickreply(user, text=None, quick_replies=None):
 #-------------------------------------------------------------------------------
 
 def send_buttons(user, text, buttons):
+
+    '''
+    Send button messgae to the user, with text and buttons.
+    '''
+
     data = {
                 "recipient": {"id": user},
                 "message": {
@@ -72,12 +105,16 @@ def send_buttons(user, text, buttons):
 #-------------------------------------------------------------------------------
 
 def send_location(user, lat, lon):
+
+    '''
+    Send location message to the user, according to the lat and lon.
+    '''
+
     # check arguments
     imageurl = "https://maps.googleapis.com/maps/api/staticmap?key=" + key +\
         "&markers=color:red|label:B|" + str(lat) + "," + str(lon) + "&size=360x360&zoom=13"
-    print(imageurl)
     itemurl = "http://maps.apple.com/maps?q="+ str(lat) +","+ str(lon) +"&z=16"
-    print(itemurl)
+
     data = {
                 "recipient": {"id": user},
                 "message": {
@@ -87,7 +124,7 @@ def send_location(user, lat, lon):
                             "template_type":"generic",
                             "elements":{
                                 "element":{
-                                    "title": "Nearest station",
+                                    "title": "Tab to open map",
                                     "image_url":imageurl,
                                     "item_url":itemurl
                                 }
@@ -99,9 +136,15 @@ def send_location(user, lat, lon):
 
                                     #"item_utl":itemurl
     resp = requests.post(urlS + TOKEN, json=data)
-    print(str(resp))
+
 #-----------------------------------------------------------------------
+
 def get_page_info():
+
+    '''
+    Get page info.
+    '''
+
     resp = requests.get("https://graph.facebook.com/v2.6/me",
                         params={"access_token": TOKEN},
                         headers={'Content-type': 'application/json'})
@@ -112,10 +155,16 @@ def get_page_info():
 #-------------------------------------------------------------------------------
 
 def get_user_info(user):
+
+    '''
+    Get user info.
+    '''
+
     resp = requests.get("https://graph.facebook.com/v2.6/%s" % user,
                         params={"access_token": TOKEN},
                         headers={'Content-type': 'application/json'})
 
+    print("resp = " + str(resp))
     info = json.loads(resp.text)
     return info
 
@@ -123,7 +172,12 @@ def get_user_info(user):
 #########################################################################
 
 if __name__ == "__main__":
-    user = "1454392541282560"
+
+    '''
+    For testing
+    '''
+
+    user = input("enter user:") 
     send_text(user, "hi")
     send_location(user, 40, 70)
     

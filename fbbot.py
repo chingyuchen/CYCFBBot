@@ -63,12 +63,14 @@ def handle_incoming_messages():
         return "ok"
 
     if msg_type is not 'state':
+        #print("NOT state")
         if cmd_analyzer.is_command(data): 
             cmd_analyzer.execute(chat_id, msg_content)
         else:
             messenger.send_text(chat_id, invalidmsg)
 
     else:
+        #print("State")
         pass
 
     return "ok"
